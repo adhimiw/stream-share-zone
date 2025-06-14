@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Plus, Bell, User } from 'lucide-react';
 
 const Header = () => {
