@@ -1,17 +1,25 @@
 
 import React, { useState } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface VoteButtonProps {
   initialScore: number;
   postId: string;
+  onAuthRequired?: () => void;
 }
 
-const VoteButton: React.FC<VoteButtonProps> = ({ initialScore, postId }) => {
+const VoteButton: React.FC<VoteButtonProps> = ({ initialScore, postId, onAuthRequired }) => {
   const [score, setScore] = useState(initialScore);
   const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
+  const { isAuthenticated } = useAuth();
 
   const handleVote = (voteType: 'up' | 'down') => {
+    if (!isAuthenticated) {
+      onAuthRequired?.();
+      return;
+    }
+
     if (userVote === voteType) {
       // Remove vote
       setUserVote(null);

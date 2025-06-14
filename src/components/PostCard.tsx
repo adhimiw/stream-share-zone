@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { MessageCircle, Share, Award, Bookmark } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 import VoteButton from './VoteButton';
 import Comments from './Comments';
 
@@ -18,17 +19,31 @@ interface Post {
 
 interface PostCardProps {
   post: Post;
+  onAuthRequired?: () => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onAuthRequired }) => {
   const [showComments, setShowComments] = useState(false);
+  const { isAuthenticated } = useAuth();
+
+  const handleCommentsToggle = () => {
+    if (!isAuthenticated) {
+      onAuthRequired?.();
+      return;
+    }
+    setShowComments(!showComments);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
       <div className="flex">
         {/* Vote Section */}
         <div className="flex-shrink-0 p-4 bg-gray-50 rounded-l-lg">
-          <VoteButton initialScore={post.score} postId={post.id} />
+          <VoteButton 
+            initialScore={post.score} 
+            postId={post.id} 
+            onAuthRequired={onAuthRequired}
+          />
         </div>
 
         {/* Content Section */}
@@ -66,7 +81,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           {/* Action Buttons */}
           <div className="flex items-center space-x-4 text-gray-500">
             <button
-              onClick={() => setShowComments(!showComments)}
+              onClick={handleCommentsToggle}
               className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
             >
               <MessageCircle className="h-4 w-4" />
@@ -78,12 +93,18 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               <span className="text-sm">Share</span>
             </button>
             
-            <button className="flex items-center space-x-1 hover:text-gray-700 transition-colors">
+            <button 
+              onClick={() => !isAuthenticated && onAuthRequired?.()}
+              className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+            >
               <Award className="h-4 w-4" />
               <span className="text-sm">Award</span>
             </button>
             
-            <button className="flex items-center space-x-1 hover:text-gray-700 transition-colors">
+            <button 
+              onClick={() => !isAuthenticated && onAuthRequired?.()}
+              className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+            >
               <Bookmark className="h-4 w-4" />
               <span className="text-sm">Save</span>
             </button>
