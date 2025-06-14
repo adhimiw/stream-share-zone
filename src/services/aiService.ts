@@ -1,4 +1,3 @@
-
 const GEMINI_API_KEY = 'AIzaSyAMvbtZW9rmmWsYPq5OKYdMnbOGSwhRc18';
 
 interface AIResponse {
@@ -107,6 +106,51 @@ Subreddit:`;
         }
       ];
       return topics[Math.floor(Math.random() * topics.length)];
+    }
+  }
+
+  async generateChatResponse(userMessage: string, history: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = []): Promise<string> {
+    const prompt = `You are RedditAI_Bot, a helpful and knowledgeable AI assistant. The user is chatting with you directly. Keep your responses concise and informative. If the user asks about current events or trending topics, provide the most relevant information you have.`;
+
+    // Combine system prompt with chat history and new user message
+    const contents = [
+      { role: 'model' as const, parts: [{ text: prompt }] }, // System-like initial instruction
+      ...history,
+      { role: 'user' as const, parts: [{ text: userMessage }] }
+    ];
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: contents,
+            // Optional: Add generationConfig if needed, e.g., temperature, maxOutputTokens
+            // generationConfig: {
+            //   temperature: 0.7,
+            //   maxOutputTokens: 256,
+            // }
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log('Gemini Chat API Response:', data);
+      
+      if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
+        return data.candidates[0].content.parts[0].text || "I'm not sure how to respond to that.";
+      } else if (data.promptFeedback && data.promptFeedback.blockReason) {
+        console.error('Gemini request blocked:', data.promptFeedback.blockReason, data.promptFeedback.safetyRatings);
+        return `I apologize, but I can't respond to that due to content restrictions. Reason: ${data.promptFeedback.blockReason}.`;
+      } else {
+        console.error('Unexpected Gemini API response structure:', data);
+        return "Sorry, I encountered an issue processing your request.";
+      }
+    } catch (error) {
+      console.error('Failed to generate chat response:', error);
+      return "I'm having trouble connecting right now. Please try again later.";
     }
   }
 }

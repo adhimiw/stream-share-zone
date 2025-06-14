@@ -11,6 +11,7 @@ import Subreddit from "./pages/Subreddit";
 import User from "./pages/User";
 import Submit from "./pages/Submit";
 import NotFound from "./pages/NotFound";
+import AIChatButton from "./components/AIChatButton"; // Import the new component
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <AIChatButton /> {/* Add the chat button here to be globally available */}
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
