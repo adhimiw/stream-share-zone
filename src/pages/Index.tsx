@@ -1,65 +1,146 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import PostCard from '../components/PostCard';
 import Sidebar from '../components/Sidebar';
 
 const Index = () => {
-  const posts = [
-    {
-      id: '1',
-      title: 'Scientists discover new method to reverse aging in mice',
-      content: 'Researchers at MIT have developed a groundbreaking technique that successfully reversed aging markers in laboratory mice. The study, published in Nature, shows promising results that could potentially be applied to human longevity research in the future.',
-      author: 'sciencefan42',
-      subreddit: 'science',
-      score: 12847,
-      comments: 892,
-      timeAgo: '6h',
-      imageUrl: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500&h=300&fit=crop'
-    },
-    {
-      id: '2',
-      title: 'My cat figured out how to open doors and now nothing is safe',
-      content: 'I thought I was being clever by getting door handles instead of knobs. Turns out my cat is smarter than me. Send help.',
-      author: 'catlover2023',
-      subreddit: 'cats',
-      score: 8965,
-      comments: 456,
-      timeAgo: '3h',
-      imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&h=300&fit=crop'
-    },
-    {
-      id: '3',
-      title: 'The new Spider-Man movie is absolutely incredible',
-      content: 'Just came back from the theater and wow. The action sequences, the storytelling, the character development - everything was perfect. Without spoiling anything, this might be the best superhero movie ever made.',
-      author: 'moviebuff88',
-      subreddit: 'movies',
-      score: 15432,
-      comments: 1203,
-      timeAgo: '4h'
-    },
-    {
-      id: '4',
-      title: 'I built a PC entirely from parts I found at garage sales',
-      content: 'Total cost: $127. It runs Cyberpunk 2077 on medium settings. Sometimes the best builds come from the most unexpected places. Here\'s how I did it...',
-      author: 'budgetbuilder',
-      subreddit: 'pcmasterrace',
-      score: 9876,
-      comments: 534,
-      timeAgo: '8h',
-      imageUrl: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=500&h=300&fit=crop'
-    },
-    {
-      id: '5',
-      title: 'TIL that octopuses have three hearts and blue blood',
-      content: 'Two hearts pump blood to the gills, while the third pumps blood to the rest of the body. Their blood is blue because it uses copper-based hemocyanin instead of iron-based hemoglobin to carry oxygen.',
-      author: 'oceanfacts',
-      subreddit: 'todayilearned',
-      score: 7234,
-      comments: 312,
-      timeAgo: '5h'
-    }
-  ];
+  const [sortBy, setSortBy] = useState<'hot' | 'new' | 'top' | 'rising'>('hot');
+
+  const allPosts = {
+    hot: [
+      {
+        id: '1',
+        title: 'Scientists discover new method to reverse aging in mice',
+        content: 'Researchers at MIT have developed a groundbreaking technique that successfully reversed aging markers in laboratory mice. The study, published in Nature, shows promising results that could potentially be applied to human longevity research in the future.',
+        author: 'sciencefan42',
+        subreddit: 'science',
+        score: 12847,
+        comments: 892,
+        timeAgo: '6h',
+        imageUrl: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500&h=300&fit=crop'
+      },
+      {
+        id: '2',
+        title: 'My cat figured out how to open doors and now nothing is safe',
+        content: 'I thought I was being clever by getting door handles instead of knobs. Turns out my cat is smarter than me. Send help.',
+        author: 'catlover2023',
+        subreddit: 'cats',
+        score: 8965,
+        comments: 456,
+        timeAgo: '3h',
+        imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&h=300&fit=crop'
+      },
+      {
+        id: '3',
+        title: 'The new Spider-Man movie is absolutely incredible',
+        content: 'Just came back from the theater and wow. The action sequences, the storytelling, the character development - everything was perfect. Without spoiling anything, this might be the best superhero movie ever made.',
+        author: 'moviebuff88',
+        subreddit: 'movies',
+        score: 15432,
+        comments: 1203,
+        timeAgo: '4h'
+      }
+    ],
+    new: [
+      {
+        id: '6',
+        title: 'Just started learning React, built my first component!',
+        content: 'Super excited to share my first React component. It\'s just a simple button but it feels like a huge achievement!',
+        author: 'newcoder123',
+        subreddit: 'reactjs',
+        score: 23,
+        comments: 8,
+        timeAgo: '12m'
+      },
+      {
+        id: '7',
+        title: 'Found this cool coffee shop in downtown',
+        content: 'Amazing latte art and the vibes are perfect for working. Definitely going back tomorrow.',
+        author: 'coffeeaddict',
+        subreddit: 'coffee',
+        score: 15,
+        comments: 3,
+        timeAgo: '25m'
+      },
+      {
+        id: '8',
+        title: 'Quick question about TypeScript generics',
+        content: 'Can someone explain how to properly use generic constraints? The documentation is confusing me.',
+        author: 'tslearner',
+        subreddit: 'typescript',
+        score: 7,
+        comments: 12,
+        timeAgo: '45m'
+      }
+    ],
+    top: [
+      {
+        id: '9',
+        title: 'Elon Musk announces Mars colony plans for 2030',
+        content: 'SpaceX CEO reveals detailed timeline for establishing the first permanent human settlement on Mars.',
+        author: 'spacenews',
+        subreddit: 'space',
+        score: 45678,
+        comments: 2890,
+        timeAgo: '2 days'
+      },
+      {
+        id: '10',
+        title: 'Cure for common cold discovered by researchers',
+        content: 'Breakthrough medical research shows 99% effectiveness in clinical trials.',
+        author: 'medicalnews',
+        subreddit: 'medicine',
+        score: 38945,
+        comments: 1567,
+        timeAgo: '1 day'
+      },
+      {
+        id: '11',
+        title: 'AI solves 50-year-old mathematical theorem',
+        content: 'Machine learning algorithm provides proof for previously unsolved mathematical problem.',
+        author: 'mathgeek',
+        subreddit: 'mathematics',
+        score: 32156,
+        comments: 876,
+        timeAgo: '3 days'
+      }
+    ],
+    rising: [
+      {
+        id: '12',
+        title: 'New cryptocurrency hits $100 in first hour',
+        content: 'Unknown digital currency experiences unprecedented growth, investors scrambling.',
+        author: 'cryptotrader',
+        subreddit: 'cryptocurrency',
+        score: 1234,
+        comments: 345,
+        timeAgo: '1h'
+      },
+      {
+        id: '13',
+        title: 'Local pizza place goes viral for unique toppings',
+        content: 'This small town pizzeria is getting international attention for their creative combinations.',
+        author: 'foodie2024',
+        subreddit: 'food',
+        score: 892,
+        comments: 156,
+        timeAgo: '2h'
+      },
+      {
+        id: '14',
+        title: 'Indie game developer releases surprise hit',
+        content: 'Solo developer\'s passion project is taking Steam by storm with 50,000 downloads in 24 hours.',
+        author: 'indiegamer',
+        subreddit: 'gaming',
+        score: 567,
+        comments: 89,
+        timeAgo: '3h'
+      }
+    ]
+  };
+
+  const currentPosts = allPosts[sortBy];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -71,23 +152,51 @@ const Index = () => {
           <div className="flex-1">
             {/* Sort Options */}
             <div className="flex items-center space-x-4 mb-6">
-              <button className="px-4 py-2 bg-orange-500 text-white rounded-full font-medium">
+              <button 
+                onClick={() => setSortBy('hot')}
+                className={`px-4 py-2 rounded-full font-medium transition-colors ${
+                  sortBy === 'hot' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+                }`}
+              >
                 Hot
               </button>
-              <button className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-full transition-colors">
+              <button 
+                onClick={() => setSortBy('new')}
+                className={`px-4 py-2 rounded-full font-medium transition-colors ${
+                  sortBy === 'new' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+                }`}
+              >
                 New
               </button>
-              <button className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-full transition-colors">
+              <button 
+                onClick={() => setSortBy('top')}
+                className={`px-4 py-2 rounded-full font-medium transition-colors ${
+                  sortBy === 'top' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+                }`}
+              >
                 Top
               </button>
-              <button className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-full transition-colors">
+              <button 
+                onClick={() => setSortBy('rising')}
+                className={`px-4 py-2 rounded-full font-medium transition-colors ${
+                  sortBy === 'rising' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+                }`}
+              >
                 Rising
               </button>
             </div>
 
             {/* Posts */}
             <div className="space-y-4">
-              {posts.map(post => (
+              {currentPosts.map(post => (
                 <PostCard key={post.id} post={post} />
               ))}
             </div>
