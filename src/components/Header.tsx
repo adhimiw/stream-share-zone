@@ -3,6 +3,16 @@ import React from 'react';
 import { Search, Plus, Bell, User } from 'lucide-react';
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
+  const handleCreateClick = () => {
+    navigate('/submit');
+  };
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,7 +20,12 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-orange-500">reddit</h1>
+              <h1 
+                className="text-2xl font-bold text-orange-500 cursor-pointer hover:text-orange-600 transition-colors"
+                onClick={handleLogoClick}
+              >
+                reddit
+              </h1>
             </div>
           </div>
 
@@ -30,7 +45,11 @@ const Header = () => {
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+            <button 
+              onClick={handleCreateClick}
+              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              title="Create Post"
+            >
               <Plus className="h-6 w-6" />
             </button>
             <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
