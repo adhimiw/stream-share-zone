@@ -109,6 +109,45 @@ Subreddit:`;
     }
   }
 
+  async generateSummary(postTitle: string, postContent: string): Promise<string> {
+    const prompt = `You are a helpful AI assistant. Summarize the following Reddit post concisely (1-2 sentences):
+Title: "${postTitle}"
+Content: "${postContent}"
+Provide only the summary text.`;
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { // Added for more control over summary length
+              maxOutputTokens: 100,
+              temperature: 0.5,
+            }
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log('Gemini Summary API Response:', data);
+      if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
+        return data.candidates[0].content.parts[0].text.trim() || "Could not generate a summary.";
+      } else if (data.promptFeedback && data.promptFeedback.blockReason) {
+        console.error('Gemini request blocked for summary:', data.promptFeedback.blockReason, data.promptFeedback.safetyRatings);
+        return `I apologize, but I can't generate a summary due to content restrictions. Reason: ${data.promptFeedback.blockReason}.`;
+      } else {
+        console.error('Unexpected Gemini API response structure for summary:', data);
+        return "Sorry, I encountered an issue generating the summary.";
+      }
+    } catch (error) {
+      console.error('Failed to generate summary:', error);
+      return "I'm having trouble connecting to generate the summary. Please try again later.";
+    }
+  }
+
   async generateChatResponse(userMessage: string, history: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = []): Promise<string> {
     const prompt = `You are RedditAI_Bot, a helpful and knowledgeable AI assistant. The user is chatting with you directly. Keep your responses concise and informative. If the user asks about current events or trending topics, provide the most relevant information you have.`;
 
