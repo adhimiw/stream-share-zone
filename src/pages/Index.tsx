@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import PostCard from '../components/PostCard';
@@ -7,7 +6,7 @@ import Sidebar from '../components/Sidebar';
 const Index = () => {
   const [sortBy, setSortBy] = useState<'hot' | 'new' | 'top' | 'rising'>('hot');
 
-  const allPosts = {
+  const initialPosts = {
     hot: [
       {
         id: '1',
@@ -140,6 +139,16 @@ const Index = () => {
     ]
   };
 
+  const [allPosts, setAllPosts] = useState(initialPosts);
+
+  const handleAICreatePost = (newPost: any) => {
+    setAllPosts(prev => ({
+      ...prev,
+      new: [newPost, ...prev.new],
+      hot: [newPost, ...prev.hot]
+    }));
+  };
+
   const currentPosts = allPosts[sortBy];
 
   return (
@@ -203,7 +212,7 @@ const Index = () => {
           </div>
 
           {/* Sidebar */}
-          <Sidebar />
+          <Sidebar onCreatePost={handleAICreatePost} />
         </div>
       </div>
     </div>

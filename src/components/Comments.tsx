@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ArrowUp, ArrowDown, MessageCircle, Award } from 'lucide-react';
+import { ArrowUp, ArrowDown, MessageCircle, Award, Bot } from 'lucide-react';
 
 interface Comment {
   id: string;
@@ -9,14 +9,16 @@ interface Comment {
   score: number;
   timeAgo: string;
   replies?: Comment[];
+  isAI?: boolean;
 }
 
 interface CommentsProps {
   postId: string;
+  onAddComment?: (postId: string, comment: Comment) => void;
 }
 
-const Comments: React.FC<CommentsProps> = ({ postId }) => {
-  const [comments] = useState<Comment[]>([
+const Comments: React.FC<CommentsProps> = ({ postId, onAddComment }) => {
+  const [comments, setComments] = useState<Comment[]>([
     {
       id: '1',
       author: 'user123',
@@ -42,6 +44,15 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
   ]);
 
+  React.useEffect(() => {
+    if (onAddComment) {
+      const handleAddComment = (newComment: Comment) => {
+        setComments(prev => [newComment, ...prev]);
+      };
+      // This would be used by the AI bot to add comments
+    }
+  }, [onAddComment]);
+
   const CommentItem: React.FC<{ comment: Comment; depth?: number }> = ({ comment, depth = 0 }) => {
     const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
     const [showReply, setShowReply] = useState(false);
@@ -50,7 +61,15 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
       <div className={`${depth > 0 ? 'ml-8 border-l-2 border-gray-200 pl-4' : ''}`}>
         <div className="py-3">
           <div className="flex items-center text-sm text-gray-500 mb-2">
-            <span className="font-medium text-gray-900">{comment.author}</span>
+            <div className="flex items-center space-x-2">
+              <span className="font-medium text-gray-900">{comment.author}</span>
+              {comment.isAI && (
+                <div className="flex items-center space-x-1 bg-purple-100 text-purple-600 px-2 py-1 rounded-full text-xs">
+                  <Bot className="h-3 w-3" />
+                  <span>AI</span>
+                </div>
+              )}
+            </div>
             <span className="mx-2">•</span>
             <span>{comment.timeAgo}</span>
           </div>

@@ -1,8 +1,26 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TrendingUp, Users, Star, Calendar } from 'lucide-react';
+import AIBot from './AIBot';
 
-const Sidebar = () => {
+interface SidebarProps {
+  onCreatePost?: (post: any) => void;
+  onAddComment?: (postId: string, comment: any) => void;
+  postId?: string;
+  postTitle?: string;
+  postContent?: string;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ 
+  onCreatePost, 
+  onAddComment, 
+  postId, 
+  postTitle, 
+  postContent 
+}) => {
+  const navigate = useNavigate();
+
   const trendingCommunities = [
     { name: 'r/technology', members: '2.1M', icon: '💻' },
     { name: 'r/gaming', members: '1.8M', icon: '🎮' },
@@ -19,8 +37,22 @@ const Sidebar = () => {
     'Climate change solution shows promise',
   ];
 
+  const handleCommunityClick = (communityName: string) => {
+    const subredditName = communityName.replace('r/', '');
+    navigate(`/r/${subredditName}`);
+  };
+
   return (
     <div className="w-80 space-y-6">
+      {/* AI Bot */}
+      <AIBot 
+        onCreatePost={onCreatePost}
+        onAddComment={onAddComment}
+        postId={postId}
+        postTitle={postTitle}
+        postContent={postContent}
+      />
+
       {/* Trending Communities */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <div className="flex items-center space-x-2 mb-4">
@@ -29,7 +61,11 @@ const Sidebar = () => {
         </div>
         <div className="space-y-3">
           {trendingCommunities.map((community, index) => (
-            <div key={community.name} className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer">
+            <div 
+              key={community.name} 
+              className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer"
+              onClick={() => handleCommunityClick(community.name)}
+            >
               <div className="flex items-center space-x-3">
                 <span className="text-sm font-medium text-gray-500">#{index + 1}</span>
                 <span className="text-2xl">{community.icon}</span>
@@ -38,7 +74,13 @@ const Sidebar = () => {
                   <p className="text-sm text-gray-500">{community.members} members</p>
                 </div>
               </div>
-              <button className="px-3 py-1 text-sm bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors">
+              <button 
+                className="px-3 py-1 text-sm bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log('Joining', community.name);
+                }}
+              >
                 Join
               </button>
             </div>
